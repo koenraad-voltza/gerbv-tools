@@ -8,6 +8,7 @@ parser.add_argument('--diffs', '-d', action="store", default="", help='location 
 parser.add_argument('--crop1', action="store", default="", help='crop source1 to wxh+x+y (px)') #2117x4927+217+579
 parser.add_argument('--crop2', action="store", default="", help='crop source1 to wxh+x+y (px)') #2117x4927+217+454
 parser.add_argument('--clean', '-c', action="store_true", help='delete all png images in cwd before start')
+parser.add_argument('--dpi', action="store", default=1000, type=int, help='dpi of the png export')
 
 args = parser.parse_args()
 
@@ -25,10 +26,10 @@ for filename1 in os.listdir(args.source1):
                 if(type == filename2.split('-')[-1].lower()):
                     print "Analysing " + type
                     #print os.path.join(args.source1, filename1)
-                    os.system("gerbv -D 1000 -x png -o " + filename1 + ".png '" + os.path.join(args.source1, filename1) + "'")
+                    os.system("gerbv -D " + args.dpi + " -x png -o " + filename1 + ".png '" + os.path.join(args.source1, filename1) + "'")
                     if (len(args.crop1)>0):
                         os.system("convert " + filename1 + ".png -crop " + args.crop1 + " " + filename1 + ".png")
-                    os.system("gerbv -D 1000 -x png -o " + filename2 + ".png '" + os.path.join(args.source2, filename2) + "'")
+                    os.system("gerbv -D " + args.dpi + " -x png -o " + filename2 + ".png '" + os.path.join(args.source2, filename2) + "'")
                     if (len(args.crop2)>0):
                         os.system("convert " + filename2 + ".png -crop " + args.crop2 + " " + filename2 + ".png")
                     os.system("convert " + filename2 + ".png " + filename1 + ".png " + "-compose minus -composite "+ filename1+"-diff.png")
